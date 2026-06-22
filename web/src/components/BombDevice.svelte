@@ -18,6 +18,7 @@
   function handleClose() {
     playHoverSound();
     uiStore.hide();
+    gameStore.cleanup();
   }
 </script>
 
@@ -144,14 +145,6 @@
         <p class="stats-line text-mono">
           REMAINING TIME: {gameStore.timer}s // ATTEMPTS: {remainingAttempts}/{gameStore.maxMistakes}
         </p>
-        <div class="splash-actions">
-          <button class="splash-btn close-nui-btn" onclick={handleClose}>
-            DISENGAGE TERMINAL
-          </button>
-          <button class="splash-btn retry-btn" onclick={handleRestart}>
-            RESET CIRCUIT
-          </button>
-        </div>
       </div>
     </div>
   {/if}
@@ -168,14 +161,6 @@
         <p class="stats-line-failed text-mono">
           CODE ERR: VOLTAGE_OVERLOAD // STABILITY: 0.0%
         </p>
-        <div class="splash-actions">
-          <button class="splash-btn retry-btn-failed" onclick={handleRestart}>
-            FORCE REBOOT BYPASS
-          </button>
-          <button class="splash-btn close-nui-btn-failed" onclick={handleClose}>
-            ABORT SESSION
-          </button>
-        </div>
       </div>
     </div>
   {/if}

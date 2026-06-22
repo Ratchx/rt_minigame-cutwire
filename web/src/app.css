@@ -27,8 +27,6 @@
   --font-cyber: 'Rajdhani', 'Chakra Petch', sans-serif;
 
   font-family: var(--font-cyber);
-  color-scheme: dark;
-  /* background-color: var(--bg-dark); */
   color: var(--color-white);
 
   -webkit-font-smoothing: antialiased;
@@ -49,18 +47,7 @@ body {
   justify-content: center;
   align-items: center;
   user-select: none;
-  background-color: var(--bg-dark);
   touch-action: manipulation;
-
-  /* Carbon fiber micro-pattern */
-  background-image:
-    radial-gradient(rgba(0, 243, 255, 0.03) calc(1 * var(--px-to-vh)), transparent 0),
-    linear-gradient(45deg, rgba(10, 12, 16, 0.8) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(10, 12, 16, 0.8) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(10, 12, 16, 0.8) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(10, 12, 16, 0.8) 75%);
-  background-size: calc(20 * var(--px-to-vh)) calc(20 * var(--px-to-vh)), calc(8 * var(--px-to-vh)) calc(8 * var(--px-to-vh)), calc(8 * var(--px-to-vh)) calc(8 * var(--px-to-vh)), calc(8 * var(--px-to-vh)) calc(8 * var(--px-to-vh)), calc(8 * var(--px-to-vh)) calc(8 * var(--px-to-vh));
-  background-position: 0 0, 0 0, 0 calc(4 * var(--px-to-vh)), calc(4 * var(--px-to-vh)) calc(-4 * var(--px-to-vh)), calc(-4 * var(--px-to-vh)) 0;
 }
 
 /* Base styles for the 1920x1080 canvas container */

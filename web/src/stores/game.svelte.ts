@@ -90,38 +90,6 @@ export class GameStore {
     this.timer = 60;
   }
 
-  constructor() {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('message', (event: MessageEvent) => {
-        const item = event.data;
-        if (!item) return;
-
-        if (item.action === 'start') {
-          if (item.securityLevel) {
-            uiStore.setSecurityLevel(item.securityLevel);
-          }
-          if (item.difficulty === 'CUSTOM') {
-            this.initGame(
-              item.wireCount,
-              item.sequenceLength,
-              item.duration,
-              item.difficulty,
-              item.fakeCount,
-              item.penaltyCount
-            );
-          } else {
-            const diff = item.difficulty || 'HARD';
-            const duration = item.duration || 30;
-            this.initGame(diff, duration);
-          }
-        } else if (item.action === 'stop') {
-          uiStore.hide();
-          this.cleanup();
-        }
-      });
-    }
-  }
-
   addLog(message: string, type: 'info' | 'warning' | 'error' | 'success' = 'info') {
     const time = new Date();
     const pad = (n: number) => n.toString().padStart(2, '0');
@@ -137,6 +105,40 @@ export class GameStore {
       ...this.logs,
     ].slice(0, 40);
   }
+
+  handlerMessage = (event: MessageEvent) => {
+    const item = event.data;
+    if (!item) return;
+
+    if (item.action === 'show') {
+      uiStore.show();
+      if (item.securityLevel) {
+        uiStore.setSecurityLevel(item.securityLevel);
+      }
+    } else if (item.action === 'hide') {
+      uiStore.hide();
+    } else if (item.action === 'start') {
+      if (item.securityLevel) {
+        uiStore.setSecurityLevel(item.securityLevel);
+      }
+      if (item.wireCount !== undefined || item.sequenceLength !== undefined) {
+        this.initGame(
+          item.wireCount,
+          item.sequenceLength,
+          item.duration,
+          item.difficulty || 'CUSTOM',
+          item.fakeCount,
+          item.penaltyCount
+        );
+      } else {
+        const diff = item.difficulty || 'HARD';
+        const duration = item.duration || 30;
+        this.initGame(diff, duration);
+      }
+    } else if (item.action === 'stop') {
+      uiStore.hide();
+    }
+  };
 
   private shuffle(array: any[]) {
     let m = array.length, t, i;
@@ -357,7 +359,6 @@ export class GameStore {
     }
 
     if (wire.cutSequenceIndex === this.currentSequenceIndex) {
-      // Correct cut!
       this.currentSequenceIndex += 1;
       this.instability = Math.max(0, this.instability - 5); // Severing cleans the feedback loops
 
