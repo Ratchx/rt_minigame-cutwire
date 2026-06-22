@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { gameStore } from '../stores/game.svelte';
-  import { playHoverSound } from '../lib/sound';
-  import type { Wire } from '../types/wire';
+  import { gameStore } from "../stores/game.svelte";
+  import { playHoverSound } from "../lib/sound";
+  import type { Wire } from "../types/wire";
 
   // State for diagnostic scan overlay
   let isScanning = $state<boolean>(false);
@@ -25,17 +25,17 @@
 
   // Sort wires so the hovered wire is rendered last, overlaying on top of others
   let sortedWires = $derived([
-    ...gameStore.wires.filter(w => w.id !== hoveredWireId),
-    ...gameStore.wires.filter(w => w.id === hoveredWireId)
+    ...gameStore.wires.filter((w) => w.id !== hoveredWireId),
+    ...gameStore.wires.filter((w) => w.id === hoveredWireId),
   ]);
 
   // Trigger diagnostic scans
   function triggerScan() {
-    if (gameStore.status !== 'PLAYING') return;
-    
+    if (gameStore.status !== "PLAYING") return;
+
     isScanning = true;
     playHoverSound();
-    
+
     if (scanTimer) clearTimeout(scanTimer);
     scanTimer = setTimeout(() => {
       isScanning = false;
@@ -44,7 +44,7 @@
 
   // Handle wire hover
   function handleMouseEnter(wire: Wire) {
-    if (gameStore.status !== 'PLAYING' || wire.isCut) return;
+    if (gameStore.status !== "PLAYING" || wire.isCut) return;
     hoveredWireId = wire.id;
     playHoverSound();
   }
@@ -55,14 +55,14 @@
 
   // Handle wire cut
   function handleWireClick(wire: Wire) {
-    if (gameStore.status !== 'PLAYING' || wire.isCut) return;
-    
+    if (gameStore.status !== "PLAYING" || wire.isCut) return;
+
     // Spawn spark particles at cut point
     spawnSparks(wire);
-    
+
     // Perform cut action in store
     gameStore.cutWire(wire.id);
-    
+
     if (hoveredWireId === wire.id) {
       hoveredWireId = null;
     }
@@ -72,7 +72,7 @@
   function spawnSparks(wire: Wire) {
     const midX = 250; // Approximated center of calc(500 * var(--px-to-vh)) wide area
     const midY = (wire.connectorLeftY + wire.connectorRightY) / 2;
-    
+
     const count = 15 + Math.floor(Math.random() * 10);
     const newSparks: Spark[] = [];
 
@@ -85,8 +85,8 @@
         y: midY,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 1.0, // bias upward slightly
-        color: wire.isPenalty ? '#ff0055' : '#00f3ff',
-        size: 2 + Math.random() * 4
+        color: wire.isPenalty ? "#ff0055" : "#00f3ff",
+        size: 2 + Math.random() * 4,
       });
     }
 
@@ -98,10 +98,10 @@
       const elapsed = Date.now() - startTime;
       if (elapsed > 700) {
         // Filter out this batch of sparks
-        sparks = sparks.filter(s => !newSparks.includes(s));
+        sparks = sparks.filter((s) => !newSparks.includes(s));
       } else {
         // Apply physics
-        sparks = sparks.map(s => {
+        sparks = sparks.map((s) => {
           if (newSparks.includes(s)) {
             return {
               ...s,
@@ -127,8 +127,14 @@
     const midY = (yLeft + yRight) / 2;
 
     // Gravity pulls severed wires downward
-    const dropLeft = Math.min(480, midY + 50 + (parseInt(wire.id.split('_')[1] || '0') % 3) * 15);
-    const dropRight = Math.min(480, midY + 65 + (parseInt(wire.id.split('_')[1] || '0') % 2) * 20);
+    const dropLeft = Math.min(
+      480,
+      midY + 50 + (parseInt(wire.id.split("_")[1] || "0") % 3) * 15,
+    );
+    const dropRight = Math.min(
+      480,
+      midY + 65 + (parseInt(wire.id.split("_")[1] || "0") % 2) * 20,
+    );
 
     const cp1x = startX + 80;
     const cp1y = yLeft;
@@ -156,9 +162,9 @@
         el.scrollTop = 0;
         el.scrollLeft = 0;
       };
-      el.addEventListener('scroll', handleScroll, { passive: true });
+      el.addEventListener("scroll", handleScroll, { passive: true });
       return () => {
-        el.removeEventListener('scroll', handleScroll);
+        el.removeEventListener("scroll", handleScroll);
       };
     }
   });
@@ -179,203 +185,279 @@
     <div class="bg-grid"></div>
 
     <div class="svg-wrapper">
-      <svg viewBox="0 0 500 500" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" overflow="hidden" class="wire-svg" ondblclick={(e) => e.preventDefault()}>
-      <defs>
-        <!-- Glowing filters for hover neon effects -->
-        <filter id="glow-cyan-svg" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="6" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id="glow-wire" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
+      <svg
+        viewBox="0 0 500 500"
+        width="100%"
+        height="100%"
+        preserveAspectRatio="xMidYMid meet"
+        overflow="hidden"
+        class="wire-svg"
+        ondblclick={(e) => e.preventDefault()}
+      >
+        <defs>
+          <!-- Glowing filters for hover neon effects -->
+          <filter
+            id="glow-cyan-svg"
+            x="-20%"
+            y="-20%"
+            width="140%"
+            height="140%"
+          >
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="glow-wire" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-      <!-- Render Left Connector Screws/Pads -->
-      {#each gameStore.wires as wire (wire.id + '_left_pad')}
-        <g class="connector-group left">
-          <!-- Connector metallic plate -->
-          <rect x="5" y={wire.connectorLeftY - 10} width="22" height="20" rx="3" fill="#1b1e25" stroke="#373e4f" />
-          <circle cx="16" cy={wire.connectorLeftY} r="5" fill="#2d3341" stroke="#48536b" />
-          <!-- Small center screw -->
-          <line x1="14" y1={wire.connectorLeftY - 2} x2="18" y2={wire.connectorLeftY + 2} stroke="#8595b2" stroke-width="1.5" />
-          
-          <!-- Port index label (L-01, etc.) -->
-          <text x="32" y={wire.connectorLeftY + 4} class="connector-label text-mono" fill="#9ca3af">
-            {wire.connectorLeftLabel}
-          </text>
-        </g>
-      {/each}
+        <!-- Render Left Connector Screws/Pads -->
+        {#each gameStore.wires as wire (wire.id + "_left_pad")}
+          <g class="connector-group left">
+            <!-- Connector metallic plate -->
+            <rect
+              x="5"
+              y={wire.connectorLeftY - 10}
+              width="22"
+              height="20"
+              rx="3"
+              fill="#1b1e25"
+              stroke="#373e4f"
+            />
+            <circle
+              cx="16"
+              cy={wire.connectorLeftY}
+              r="5"
+              fill="#2d3341"
+              stroke="#48536b"
+            />
+            <!-- Small center screw -->
+            <line
+              x1="14"
+              y1={wire.connectorLeftY - 2}
+              x2="18"
+              y2={wire.connectorLeftY + 2}
+              stroke="#8595b2"
+              stroke-width="1.5"
+            />
 
-      <!-- Render Right Connector Screws/Pads -->
-      {#each gameStore.wires as wire (wire.id + '_right_pad')}
-        <g class="connector-group right">
-          <rect x="473" y={wire.connectorRightY - 10} width="22" height="20" rx="3" fill="#1b1e25" stroke="#373e4f" />
-          <circle cx="484" cy={wire.connectorRightY} r="5" fill="#2d3341" stroke="#48536b" />
-          <line x1="482" y1={wire.connectorRightY - 2} x2="486" y2={wire.connectorRightY + 2} stroke="#8595b2" stroke-width="1.5" />
-          
-          <text x="468" y={wire.connectorRightY + 4} class="connector-label text-mono right-align" fill="#9ca3af">
-            {wire.connectorRightLabel}
-          </text>
-        </g>
-      {/each}
+            <!-- Port index label (L-01, etc.) -->
+            <text
+              x="32"
+              y={wire.connectorLeftY + 4}
+              class="connector-label text-mono"
+              fill="#9ca3af"
+            >
+              {wire.connectorLeftLabel}
+            </text>
+          </g>
+        {/each}
 
-      <!-- Dynamic Wire rendering sorted so hovered is on top -->
-      {#each sortedWires as wire (wire.id)}
-        {@const isHovered = hoveredWireId === wire.id}
-        {@const showLabel = isScanning || isHovered}
-        
-        {#if !wire.isCut}
-          <!-- Single curved wire -->
-          <!-- Background thick clickbox handler to make clicking easy -->
-          <path
-            d={wire.pathD}
-            fill="none"
-            stroke="transparent"
-            stroke-width="14"
-            class="wire-click-target"
-            role="button"
-            tabindex="-1"
-            aria-label="Cut wire {wire.label}"
-            pointer-events="stroke"
-            onmouseenter={() => handleMouseEnter(wire)}
-            onmouseleave={handleMouseLeave}
-            onclick={() => handleWireClick(wire)}
-            onkeydown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleWireClick(wire);
-              }
-            }}
-            onmousedown={(e) => e.preventDefault()}
-          />
+        <!-- Render Right Connector Screws/Pads -->
+        {#each gameStore.wires as wire (wire.id + "_right_pad")}
+          <g class="connector-group right">
+            <rect
+              x="473"
+              y={wire.connectorRightY - 10}
+              width="22"
+              height="20"
+              rx="3"
+              fill="#1b1e25"
+              stroke="#373e4f"
+            />
+            <circle
+              cx="484"
+              cy={wire.connectorRightY}
+              r="5"
+              fill="#2d3341"
+              stroke="#48536b"
+            />
+            <line
+              x1="482"
+              y1={wire.connectorRightY - 2}
+              x2="486"
+              y2={wire.connectorRightY + 2}
+              stroke="#8595b2"
+              stroke-width="1.5"
+            />
 
-          <!-- Glowing wire shadow -->
-          <path
-            d={wire.pathD}
-            fill="none"
-            stroke={wire.color}
-            stroke-width={isHovered ? 7 : 4}
-            opacity={isHovered ? 0.95 : 0.65}
-            filter={isHovered ? 'url(#glow-cyan-svg)' : 'url(#glow-wire)'}
-            style="pointer-events: none;"
-          />
+            <text
+              x="468"
+              y={wire.connectorRightY + 4}
+              class="connector-label text-mono right-align"
+              fill="#9ca3af"
+            >
+              {wire.connectorRightLabel}
+            </text>
+          </g>
+        {/each}
 
-          <!-- Core wire line -->
-          <path
-            d={wire.pathD}
-            fill="none"
-            stroke={wire.isFake ? '#52525b' : wire.color}
-            stroke-width="3"
-            style="pointer-events: none;"
-          />
+        <!-- Dynamic Wire rendering sorted so hovered is on top -->
+        {#each sortedWires as wire (wire.id)}
+          {@const isHovered = hoveredWireId === wire.id}
+          {@const showLabel = isScanning || isHovered}
 
-          <!-- Wire stripes/accents to indicate high voltage or decoy details -->
-          {#if wire.isPenalty}
+          {#if !wire.isCut}
+            <!-- Single curved wire -->
+            <!-- Background thick clickbox handler to make clicking easy -->
             <path
               d={wire.pathD}
               fill="none"
-              stroke="#ff0000"
-              stroke-width="3"
-              stroke-dasharray="8 8"
-              opacity="0.9"
+              stroke="transparent"
+              stroke-width="14"
+              class="wire-click-target"
+              role="button"
+              tabindex="-1"
+              aria-label="Cut wire {wire.label}"
+              pointer-events="stroke"
+              onmouseenter={() => handleMouseEnter(wire)}
+              onmouseleave={handleMouseLeave}
+              onclick={() => handleWireClick(wire)}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleWireClick(wire);
+                }
+              }}
+              onmousedown={(e) => e.preventDefault()}
+            />
+
+            <!-- Glowing wire shadow -->
+            <path
+              d={wire.pathD}
+              fill="none"
+              stroke={wire.color}
+              stroke-width={isHovered ? 7 : 4}
+              opacity={isHovered ? 0.95 : 0.65}
+              filter={isHovered ? "url(#glow-cyan-svg)" : "url(#glow-wire)"}
               style="pointer-events: none;"
             />
-          {/if}
 
-          <!-- Floating wire alphanumeric label (SEC-12, etc.) -->
-          {#if showLabel}
-            {@const labelX = 250}
-            {@const labelY = (wire.connectorLeftY + wire.connectorRightY) / 2}
-            
-            <g class="label-g" style="pointer-events: none;">
-              <rect 
-                x={labelX - 40} 
-                y={labelY - 11} 
-                width="80" 
-                height="22" 
-                rx="3" 
-                fill="#0a0d13" 
-                stroke={wire.isPenalty ? '#ff0055' : '#00f3ff'} 
-                stroke-width="1"
+            <!-- Core wire line -->
+            <path
+              d={wire.pathD}
+              fill="none"
+              stroke={wire.isFake ? "#52525b" : wire.color}
+              stroke-width="3"
+              style="pointer-events: none;"
+            />
+
+            <!-- Wire stripes/accents to indicate high voltage or decoy details -->
+            {#if wire.isPenalty}
+              <path
+                d={wire.pathD}
+                fill="none"
+                stroke="#ff0000"
+                stroke-width="3"
+                stroke-dasharray="8 8"
+                opacity="0.9"
+                style="pointer-events: none;"
               />
-              <text 
-                x={labelX} 
-                y={labelY + 4} 
-                class="wire-tag text-mono"
-                class:penalty={wire.isPenalty}
-                class:fake={wire.isFake}
-              >
-                {wire.label}
-              </text>
-            </g>
+            {/if}
+
+            <!-- Floating wire alphanumeric label (SEC-12, etc.) -->
+            {#if showLabel}
+              {@const labelX = 250}
+              {@const labelY = (wire.connectorLeftY + wire.connectorRightY) / 2}
+
+              <g class="label-g" style="pointer-events: none;">
+                <rect
+                  x={labelX - 40}
+                  y={labelY - 11}
+                  width="80"
+                  height="22"
+                  rx="3"
+                  fill="#0a0d13"
+                  stroke={wire.isPenalty ? "#ff0055" : "#00f3ff"}
+                  stroke-width="1"
+                />
+                <text
+                  x={labelX}
+                  y={labelY + 4}
+                  class="wire-tag text-mono"
+                  class:penalty={wire.isPenalty}
+                  class:fake={wire.isFake}
+                >
+                  {wire.label}
+                </text>
+              </g>
+            {/if}
+          {:else}
+            <!-- Severed Wire (split into left and right dangling halves) -->
+            {@const severed = getSeveredPaths(wire)}
+
+            <!-- Left severed half -->
+            <path
+              d={severed.leftD}
+              fill="none"
+              stroke={wire.color}
+              stroke-width="4"
+              opacity="0.3"
+              filter="url(#glow-wire)"
+            />
+            <path
+              d={severed.leftD}
+              fill="none"
+              stroke={wire.isFake ? "#3f3f46" : wire.color}
+              stroke-width="2.5"
+            />
+
+            <!-- Right severed half -->
+            <path
+              d={severed.rightD}
+              fill="none"
+              stroke={wire.color}
+              stroke-width="4"
+              opacity="0.3"
+              filter="url(#glow-wire)"
+            />
+            <path
+              d={severed.rightD}
+              fill="none"
+              stroke={wire.isFake ? "#3f3f46" : wire.color}
+              stroke-width="2.5"
+            />
+
+            <!-- Small copper wire tips visible on severed edges -->
+            {@const startLeftX = 30}
+            {@const endLeftX = 250 - 15}
+            {@const leftSeveredY = Math.min(
+              480,
+              (wire.connectorLeftY + wire.connectorRightY) / 2 +
+                50 +
+                (parseInt(wire.id.split("_")[1] || "0") % 3) * 15,
+            )}
+            <circle cx={endLeftX} cy={leftSeveredY} r="2" fill="#c27732" />
+
+            {@const startRightX = 250 + 15}
+            {@const rightSeveredY = Math.min(
+              480,
+              (wire.connectorLeftY + wire.connectorRightY) / 2 +
+                65 +
+                (parseInt(wire.id.split("_")[1] || "0") % 2) * 20,
+            )}
+            <circle cx={startRightX} cy={rightSeveredY} r="2" fill="#c27732" />
           {/if}
-        {:else}
-          <!-- Severed Wire (split into left and right dangling halves) -->
-          {@const severed = getSeveredPaths(wire)}
-          
-          <!-- Left severed half -->
-          <path
-            d={severed.leftD}
-            fill="none"
-            stroke={wire.color}
-            stroke-width="4"
-            opacity="0.3"
+        {/each}
+
+        <!-- Spark particles overlay -->
+        {#each sparks as spark (spark.id)}
+          <circle
+            cx={spark.x}
+            cy={spark.y}
+            r={spark.size}
+            fill={spark.color}
             filter="url(#glow-wire)"
+            class="spark"
           />
-          <path
-            d={severed.leftD}
-            fill="none"
-            stroke={wire.isFake ? '#3f3f46' : wire.color}
-            stroke-width="2.5"
-          />
-
-          <!-- Right severed half -->
-          <path
-            d={severed.rightD}
-            fill="none"
-            stroke={wire.color}
-            stroke-width="4"
-            opacity="0.3"
-            filter="url(#glow-wire)"
-          />
-          <path
-            d={severed.rightD}
-            fill="none"
-            stroke={wire.isFake ? '#3f3f46' : wire.color}
-            stroke-width="2.5"
-          />
-
-          <!-- Small copper wire tips visible on severed edges -->
-          {@const startLeftX = 30}
-          {@const endLeftX = 250 - 15}
-          {@const leftSeveredY = Math.min(480, ((wire.connectorLeftY + wire.connectorRightY) / 2) + 50 + (parseInt(wire.id.split('_')[1] || '0') % 3) * 15)}
-          <circle cx={endLeftX} cy={leftSeveredY} r="2" fill="#c27732" />
-
-          {@const startRightX = 250 + 15}
-          {@const rightSeveredY = Math.min(480, ((wire.connectorLeftY + wire.connectorRightY) / 2) + 65 + (parseInt(wire.id.split('_')[1] || '0') % 2) * 20)}
-          <circle cx={startRightX} cy={rightSeveredY} r="2" fill="#c27732" />
-        {/if}
-      {/each}
-
-      <!-- Spark particles overlay -->
-      {#each sparks as spark (spark.id)}
-        <circle 
-          cx={spark.x} 
-          cy={spark.y} 
-          r={spark.size} 
-          fill={spark.color} 
-          filter="url(#glow-wire)"
-          class="spark"
-        />
-      {/each}
+        {/each}
       </svg>
     </div>
   </div>
@@ -428,8 +510,6 @@
     color: var(--color-muted);
   }
 
-
-
   /* SVG Arena layout */
   .svg-container {
     flex-grow: 1;
@@ -450,13 +530,18 @@
     align-items: center;
   }
 
-  /* Technical backdrop grid drawing */
   .bg-grid {
     position: absolute;
     inset: 0;
-    background-image: 
-      linear-gradient(rgba(255, 255, 255, 0.02) calc(1 * var(--px-to-vh)), transparent calc(1 * var(--px-to-vh))),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.02) calc(1 * var(--px-to-vh)), transparent calc(1 * var(--px-to-vh)));
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.02) calc(1 * var(--px-to-vh)),
+        transparent calc(1 * var(--px-to-vh))
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.02) calc(1 * var(--px-to-vh)),
+        transparent calc(1 * var(--px-to-vh))
+      );
     background-size: calc(20 * var(--px-to-vh)) calc(20 * var(--px-to-vh));
     pointer-events: none;
     z-index: 0;
@@ -513,7 +598,11 @@
 
   /* Animation definitions */
   @keyframes flash {
-    0% { opacity: 0.2; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>

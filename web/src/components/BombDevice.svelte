@@ -514,43 +514,6 @@
     margin-bottom: calc(24 * var(--px-to-vh));
   }
 
-  .splash-actions {
-    display: flex;
-    gap: calc(12 * var(--px-to-vh));
-    justify-content: center;
-  }
-
-  .splash-btn {
-    border-radius: calc(4 * var(--px-to-vh));
-    font-family: var(--font-cyber);
-    font-size: calc(12 * var(--px-to-vh));
-    font-weight: 700;
-    letter-spacing: calc(1 * var(--px-to-vh));
-    padding: calc(10 * var(--px-to-vh)) calc(20 * var(--px-to-vh));
-    cursor: pointer;
-  }
-
-  .close-nui-btn {
-    background: var(--color-lime);
-    color: var(--bg-dark);
-    border: none;
-    box-shadow: var(--glow-lime);
-  }
-
-  .close-nui-btn:hover {
-    filter: brightness(1.2);
-  }
-
-  .retry-btn {
-    background: transparent;
-    color: var(--color-white);
-    border: calc(1 * var(--px-to-vh)) solid var(--border-muted);
-  }
-
-  .retry-btn:hover {
-    border-color: var(--color-white);
-    background: rgba(255, 255, 255, 0.05);
-  }
 
   /* Failure splash styling overrides */
   .glitch-title-failed {
@@ -583,26 +546,6 @@
     margin-bottom: calc(24 * var(--px-to-vh));
   }
 
-  .close-nui-btn-failed {
-    background: transparent;
-    color: var(--color-white);
-    border: calc(1 * var(--px-to-vh)) solid var(--border-red);
-  }
-
-  .close-nui-btn-failed:hover {
-    background: rgba(255, 0, 85, 0.05);
-  }
-
-  .retry-btn-failed {
-    background: var(--color-red);
-    color: var(--color-white);
-    border: none;
-    box-shadow: var(--glow-red);
-  }
-
-  .retry-btn-failed:hover {
-    filter: brightness(1.2);
-  }
 
   /* Keyframe animations */
   @keyframes fade-in {

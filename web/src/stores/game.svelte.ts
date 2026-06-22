@@ -377,11 +377,11 @@ export class GameStore {
 
       if (wire.isDecoy) {
         this.addLog(`FAIL: Decoy wire ${wire.label} severed. Circuit unstable.`, 'warning');
+        this.checkDefuseState();
       } else {
         this.addLog(`SEQUENCE BREAK: Wire ${wire.label} severed out of order!`, 'error');
+        this.failGame('SEQUENCE_BREAK');
       }
-
-      this.checkDefuseState();
     }
   }
 
@@ -412,6 +412,8 @@ export class GameStore {
       this.addLog('CRITICAL: Volatile surge overload. Containment failure.', 'error');
     } else if (reason === 'MAX_CRITICAL_ERRORS') {
       this.addLog('CRITICAL: Defusal hardware damaged. Auto-detonation triggered.', 'error');
+    } else if (reason === 'SEQUENCE_BREAK') {
+      this.addLog('CRITICAL: Bypass sequence broken. Detonation triggered.', 'error');
     }
 
     this.addLog('DISARM SEQUENCE FAILED. BOMB DETONATED.', 'error');
